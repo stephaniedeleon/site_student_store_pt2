@@ -19,8 +19,9 @@ CREATE TABLE products (
 
 CREATE TABLE orders (
   id            SERIAL PRIMARY KEY,
-  FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
-  created_at    TIMESTAMP NOT NULL DEFAULT NOW()
+  customer_id   INTEGER NOT NULL,
+  created_at    TIMESTAMP NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE order_details (
