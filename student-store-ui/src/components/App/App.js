@@ -58,8 +58,8 @@ export default function App() {
 
       try {
         const res = await axios.get("http://localhost:3001/store")
-        if (res?.data?.products) {
-          setProducts(res.data.products)
+        if (res?.data?.products?.rows) {
+          setProducts(res.data.products.rows)
         } else {
           setError("Error fetching products.")
         }
