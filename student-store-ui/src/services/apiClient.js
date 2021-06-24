@@ -6,10 +6,7 @@ class ApiClient {
 
         this.remoteHostUrl = remoteHostUrl;
         this.token = null;
-    }
-
-    setToken(token) {
-        this.token = token;
+        this.tokenName = "student_store_token";
     }
 
     //utility method...
@@ -29,6 +26,19 @@ class ApiClient {
             const errorResponse = error?.response?.data?.error?.message;
             return { data: null, error: errorResponse || String(error) };
         }
+    }
+
+    async listProducts() {
+        return await this.request({ endpoint: "store", method: "GET" });
+    }
+
+    setToken(token) {
+        this.token = token;
+        localStorage.setItem(this.tokenName, token);
+    }
+
+    async fetchUserFromToken() {
+        return await this.request({ endpoint: "auth/me/", method: "GET" });
     }
 
     async loginUser(credentials) { 

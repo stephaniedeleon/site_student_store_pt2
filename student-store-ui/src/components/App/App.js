@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import axios from "axios"
+import apiClient from "../../services/apiClient"
 import Home from "../Home/Home"
 import Signup from "../Signup/Signup"
 import Login from "../Login/Login"
@@ -56,24 +57,51 @@ export default function App() {
     const fetchProducts = async () => {
       setIsFetching(true)
 
-      try {
-        const res = await axios.get("http://localhost:3001/store")
-        if (res?.data?.products?.rows) {
-          setProducts(res.data.products.rows)
-        } else {
-          setError("Error fetching products.")
-        }
-      } catch (err) {
-        console.log(err)
-        const message = err?.response?.data?.error?.message
-        setError(message ?? String(err))
-      } finally {
-        setIsFetching(false)
-      }
+      const { data, error } = await apiClient.listProducts();
+      if(data) setProducts(data.products.rows);
+      if(error) setError(error);
+
+      setIsFetching(false)
+
+      // try {
+      //   const res = await axios.get("http://localhost:3001/store")
+      //   if (res?.data?.products?.rows) {
+      //     setProducts(res.data.products.rows)
+      //   } else {
+      //     setError("Error fetching products.")
+      //   }
+      // } catch (err) {
+      //   console.log(err)
+      //   const message = err?.response?.data?.error?.message
+      //   setError(message ?? String(err))
+      // } finally {
+      //   setIsFetching(false)
+      // }
     }
 
     fetchProducts()
   }, [])
+
+
+  useEffect(() => {
+    const fetchAuthedUser = async () => {
+
+      const { data, error } = await apiClient.fetchUserFromToken();
+      if(data) setUser(data.user);
+      if(error) setError(error);
+
+      setIsFetching(false)
+
+    }
+
+    const token = localStorage.getItem("student_store_token");
+    if (token) {
+      apiClient.setToken(token);
+      fetchAuthedUser();
+    }
+
+  }, [])
+
 
   return (
     <div className="App">
