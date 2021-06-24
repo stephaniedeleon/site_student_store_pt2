@@ -16,8 +16,9 @@ const jwtFrom = ({ headers }) => {
 
 // create a function to attach the user to the res object
 const extractUserFromJwt = (req, res, next) => {
+
     try {
-        const token = jwtForm(req);
+        const token = jwtFrom(req);
         if (token) {
             res.locals.user = jwt.verify(token, SECRET_KEY);
         }
@@ -25,7 +26,7 @@ const extractUserFromJwt = (req, res, next) => {
         return next();
 
     } catch (error) {
-
+        console.log(error)
         return next();
     }
 }
@@ -37,7 +38,8 @@ const requireAuthenticatedUser = (req, res, next) => {
         if(!user?.email) {
             throw new UnauthorizedError();
         }
-        
+        return next();
+
     } catch (error) {
 
         return next(error);
